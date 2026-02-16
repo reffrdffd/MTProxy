@@ -45,32 +45,6 @@ echo "Your secret key: ee${RANDOM_HEX}${DOMAIN_HEX}"
 ## 🎯 Recommended to use in Rootless mode:<br>
 https://docs.docker.com/engine/security/rootless/
 
-### Docker Compose (Recommended)
-```yaml
-services:
-  mtproto:
-    image: ammnt/mtproxy:slim
-    container_name: mtproxy
-    restart: unless-stopped
-    ports:
-      - "443:3478"
-      - "8888:8888"
-    user: "10480:10480"
-    read_only: true
-    privileged: false
-    tmpfs:
-      - /tmp:mode=1700,size=100M,noexec,nosuid,nodev,uid=10480,gid=10480
-    cap_drop:
-      - ALL
-    security_opt:
-      - no-new-privileges=true
-    command:
-      - "-S"
-      - "${RANDOM_HEX}"
-      - "-D"
-      - "${DOMAIN}"
-```
-
 ## 🔥 Why Choose This Image?
 
 ### **Hardened Security**
