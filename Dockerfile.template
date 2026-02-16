@@ -1,0 +1,98 @@
+# Build arguments for version pinning and reproducibility
+ARG BASE_VERSION=13.3-slim
+ARG BASE_HASH=f6e2cfac5cf956ea044b4bd75e6397b4372ad88fe00908045e9a0d21712ae3ba
+FROM debian:${BASE_VERSION}@sha256:${BASE_HASH} AS builder
+ARG UID=10480
+ARG GID=10480
+
+WORKDIR /tmp
+RUN set -e \
+    # Update system and install build dependencies
+    && apt-get update && apt-get install --no-install-recommends -y \
+            git=1:2.47.3-0+deb13u1 \
+            build-essential=12.12 \
+            libssl-dev=3.5.4-1~deb13u2 \
+            zlib1g-dev=1:1.3.dfsg+really1.3.1-1+b1 \
+            curl=8.14.1-2+deb13u2 \
+            upx-ucl=4.2.4-1.1 \
+            ca-certificates=20250419 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    # Create non-root user for security
+    && groupadd --system --gid "${GID}" mtproxy \
+    && useradd --system --no-create-home --shell /bin/false --gid "${GID}" --uid "${UID}" mtproxy \
+    # Update CA certificates
+    && update-ca-certificates \
+    # Clone MTProxy source code
+    && git clone -q --depth 1 --single-branch -b "master" https://github.com/TelegramMessenger/MTProxy \
+    && sed -i '/assert (!(p & 0xffff0000));/s/^/\/\//' /tmp/MTProxy/common/pid.c \
+    && mkdir /etc/mtproxy && chown -R "${UID}:${GID}" /etc/mtproxy \
+    # Build MTProxy
+    && make -C /tmp/MTProxy -s clean && make -C /tmp/MTProxy -s -j "$(nproc)" \
+    # Download necessary config files
+    && curl -sS https://core.telegram.org/getProxySecret -o /etc/mtproxy/secret \
+    && curl -sS https://core.telegram.org/getProxyConfig -o /etc/mtproxy/multi \
+    && cp /tmp/MTProxy/objs/bin/mtproto-proxy /usr/local/bin/mtproto-proxy \
+    # Security hardening: strip debug symbols and compress binary
+    && strip --strip-all /usr/local/bin/mtproto-proxy \
+    && upx --best --lzma /usr/local/bin/mtproto-proxy \
+    && rm -rf /tmp/* \
+    && grep -E "(root|mtproxy)" /etc/passwd > /tmp/passwd \
+    && grep -E "(root|mtproxy)" /etc/group > /tmp/group \
+    && grep -E "(root|mtproxy)" /etc/shadow > /tmp/shadow \
+    # Set proper permissions
+    && chmod 550 /etc/mtproxy \
+    && chmod 400 /etc/mtproxy/multi /etc/mtproxy/secret \
+    && chmod 644 /tmp/passwd /tmp/group && chmod 640 /tmp/shadow
+
+# Create minimal runtime image
+FROM scratch
+ARG UID=10480
+ARG GID=10480
+
+WORKDIR /tmp
+# Copy user/group information, binary and configs
+COPY --from=builder --chown="0:0" /tmp/passwd /tmp/group /tmp/shadow /etc/
+COPY --from=builder --chown="${UID}:${GID}" --chmod="550" /usr/local/bin/mtproto-proxy /usr/local/bin/mtproto
+COPY --from=builder --chown="${UID}:${GID}" /etc/mtproxy/secret /etc/mtproxy/secret
+COPY --from=builder --chown="${UID}:${GID}" /etc/mtproxy/multi /etc/mtproxy/multi
+COPY --from=builder --chown="0:0" /lib64/ld-linux-x86-64.so.2 /lib64/
+COPY --from=builder --chown="0:0" \
+                    /usr/lib/x86_64-linux-gnu/libm.so.6 \
+                    /usr/lib/x86_64-linux-gnu/libcrypto.so.3 \
+                    /usr/lib/x86_64-linux-gnu/libc.so.6 \
+                    /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 \
+                    /usr/lib/x86_64-linux-gnu/libz.so.1 \
+                    /usr/lib/x86_64-linux-gnu/libzstd.so.1 \
+                    /lib/x86_64-linux-gnu/
+
+# Expose proxy port and stats port
+EXPOSE 3478 8888
+
+# OCI labels for image metadata
+LABEL description="Dockerized MTProto Proxy for Telegram" \
+      maintainer="ammnt <admin@msftcnsi.com>" \
+      org.opencontainers.image.description="Dockerized MTProto Proxy for Telegram" \
+      org.opencontainers.image.title="Dockerized MTProto Proxy for Telegram" \
+      org.opencontainers.image.source="https://github.com/TelegramMessenger/MTProxy" \
+      org.opencontainers.image.authors="ammnt, admin@msftcnsi.com" \
+      org.opencontainers.image.documentation="https://github.com/TelegramMessenger/MTProxy/blob/master/README.md" \
+      org.opencontainers.image.licenses="GPLv2" \
+      org.opencontainers.image.url="https://msftcnsi.com"
+
+# Use SIGQUIT for graceful shutdown with connection draining
+STOPSIGNAL SIGQUIT
+
+# Run as non-root user
+USER "${UID}:${GID}"
+
+# Secret key and domain should be provided at runtime with -S and -D args
+ENTRYPOINT ["/usr/local/bin/mtproto", \
+  "-u", "mtproxy", \
+  "-p", "8888", \
+  "-H", "3478", \
+  "-C", "35000", \
+  "-l", "/dev/stdout", \
+  "--aes-pwd", "/etc/mtproxy/secret", \
+  "/etc/mtproxy/multi", \
+  "-M", "1"]
+CMD ["-S", "", "-D", ""]
