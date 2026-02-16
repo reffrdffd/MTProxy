@@ -22,8 +22,7 @@
 
 ### Generate Secret Key and TLS secret (ee + random + domain in hex)
 ```bash
-# Generate random 16-byte hex key (32 hex characters)
-DOMAIN="example.com"
+DOMAIN="cloudflare.com"
 DOMAIN_HEX=$(echo -n $DOMAIN | xxd -ps)
 RANDOM_HEX=$(head -c 16 /dev/urandom | xxd -ps)
 TLS_SECRET="ee${RANDOM_HEX}${DOMAIN_HEX}"
