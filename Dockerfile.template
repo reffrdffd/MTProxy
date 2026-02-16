@@ -86,13 +86,14 @@ STOPSIGNAL SIGQUIT
 USER "${UID}:${GID}"
 
 # Secret key and domain should be provided at runtime with -S and -D args
-ENTRYPOINT ["/usr/local/bin/mtproto", \
-  "-u", "mtproxy", \
-  "-p", "8888", \
-  "-H", "3478", \
-  "-C", "35000", \
-  "-l", "/dev/stdout", \
-  "--aes-pwd", "/etc/mtproxy/secret", \
-  "/etc/mtproxy/multi", \
-  "-M", "1"]
-CMD ["-S", "", "-D", ""]
+ENTRYPOINT /usr/local/bin/mtproto \
+  -u mtproxy \
+  -p 8888 \
+  -H 3478 \
+  -C 35000 \
+  -l /dev/stdout \
+  --aes-pwd /etc/mtproxy/secret \
+  /etc/mtproxy/multi \
+  -M 1 \
+  --nat-info ${INTERNAL_IP}:${EXTERNAL_IP} \
+  -S ${RANDOM_HEX} -D ${DOMAIN}

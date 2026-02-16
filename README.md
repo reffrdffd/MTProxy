@@ -25,17 +25,22 @@
 DOMAIN="cloudflare.com"
 DOMAIN_HEX=$(echo -n $DOMAIN | xxd -ps)
 RANDOM_HEX=$(head -c 16 /dev/urandom | xxd -ps)
-TLS_SECRET="ee${RANDOM_HEX}${DOMAIN_HEX}"
-echo "Your secret key: $TLS_SECRET"
+EXTERNAL_IP=$(curl -s ifconfig.me)
+INTERNAL_IP=172.17.0.2
 
 docker run -d \
   --name mtproxy \
   -p 443:3478 \
   -p 8888:8888 \
+  -e INTERNAL_IP=$INTERNAL_IP \
+  -e EXTERNAL_IP=$EXTERNAL_IP \
+  -e RANDOM_HEX=$RANDOM_HEX \
+  -e DOMAIN="$DOMAIN" \
   --restart unless-stopped \
-  ammnt/mtproxy:slim \
-  -S $RANDOM_HEX \
-  -D $DOMAIN
+  ammnt/mtproxy:slim
+
+TLS_SECRET="ee${RANDOM_HEX}${DOMAIN_HEX}"
+echo "Your secret key: $TLS_SECRET"
 ```
 
 ## 🔧 Advanced Configuration
