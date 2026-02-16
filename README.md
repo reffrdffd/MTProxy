@@ -40,8 +40,6 @@ docker run -d \
 echo "Your secret key: ee${RANDOM_HEX}${DOMAIN_HEX}"
 ```
 
-## 🔧 Advanced Configuration
-
 ## 🎯 Recommended to use in Rootless mode:<br>
 https://docs.docker.com/engine/security/rootless/
 
