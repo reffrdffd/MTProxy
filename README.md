@@ -23,21 +23,19 @@
 ### Generate Secret Key and TLS secret (ee + random + domain in hex)
 ```bash
 DOMAIN="cloudflare.com"
-DOMAIN_HEX=$(echo -n $DOMAIN | xxd -ps)
+DOMAIN_HEX=$(echo -n cloudflare.com | xxd -ps)
 RANDOM_HEX=$(head -c 16 /dev/urandom | xxd -ps)
 EXTERNAL_IP=$(curl -s ifconfig.me)
-INTERNAL_IP=172.17.0.2
+INTERNAL_IP=172.17.0.2 # your container local IP
 
 docker run -d \
   --name mtproxy \
   -p 443:3478 \
   -p 8888:8888 \
-  -e INTERNAL_IP=$INTERNAL_IP \
-  -e EXTERNAL_IP=$EXTERNAL_IP \
-  -e RANDOM_HEX=$RANDOM_HEX \
-  -e DOMAIN="$DOMAIN" \
-  --restart unless-stopped \
-  ammnt/mtproxy:slim
+  ammnt/mtproxy:slim \
+  --nat-info $INTERNAL_IP:$EXTERNAL_IP \
+  -S $RANDOM_HEX \
+  -D $DOMAIN
 
 TLS_SECRET="ee${RANDOM_HEX}${DOMAIN_HEX}"
 echo "Your secret key: $TLS_SECRET"
