@@ -60,7 +60,7 @@ services:
       - no-new-privileges=true
     command:
       - "-S"
-      - "${TLS_SECRET}"
+      - "${RANDOM_HEX}"
       - "-D"
       - "${DOMAIN}"
 ```
