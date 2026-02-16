@@ -39,6 +39,11 @@ docker run -d \
   -D $DOMAIN
 ```
 
+## 🔧 Advanced Configuration
+
+## 🎯 Recommended to use in Rootless mode:<br>
+https://docs.docker.com/engine/security/rootless/
+
 ### Docker Compose (Recommended)
 ```yaml
 services:
