@@ -37,8 +37,7 @@ docker run -d \
   -S $RANDOM_HEX \
   -D $DOMAIN
 
-TLS_SECRET="ee${RANDOM_HEX}${DOMAIN_HEX}"
-echo "Your secret key: $TLS_SECRET"
+echo "Your secret key: ee${RANDOM_HEX}${DOMAIN_HEX}"
 ```
 
 ## 🔧 Advanced Configuration
