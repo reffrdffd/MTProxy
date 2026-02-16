@@ -1,4 +1,4 @@
-# 🚀 Distroless MTProto Proxy: Hardened Telegram Proxy
+# 🚀 Distroless MTProto Proxy: Hardened image
 
 [![CI/CD](https://github.com/ammnt/MTProxy/actions/workflows/build.yml/badge.svg)](https://github.com/ammnt/MTProxy/actions/workflows/build.yml)
 [![GitHub stars](https://img.shields.io/github/stars/ammnt/MTProxy.svg)](https://github.com/ammnt/MTProxy/stargazers)

@@ -69,13 +69,13 @@ COPY --from=builder --chown="0:0" \
 EXPOSE 3478 8888
 
 # OCI labels for image metadata
-LABEL description="Dockerized MTProto Proxy for Telegram" \
+LABEL description="Distroless MTProto Proxy: Hardened image🚀" \
       maintainer="ammnt <admin@msftcnsi.com>" \
-      org.opencontainers.image.description="Dockerized MTProto Proxy for Telegram" \
-      org.opencontainers.image.title="Dockerized MTProto Proxy for Telegram" \
-      org.opencontainers.image.source="https://github.com/TelegramMessenger/MTProxy" \
+      org.opencontainers.image.description="Distroless MTProto Proxy: Hardened image🚀" \
+      org.opencontainers.image.title="Distroless MTProto Proxy: Hardened image🚀" \
+      org.opencontainers.image.source="https://github.com/ammnt/MTProxy" \
       org.opencontainers.image.authors="ammnt, admin@msftcnsi.com" \
-      org.opencontainers.image.documentation="https://github.com/TelegramMessenger/MTProxy/blob/master/README.md" \
+      org.opencontainers.image.documentation="https://github.com/ammnt/MTProxy/blob/main/README.md" \
       org.opencontainers.image.licenses="GPLv2" \
       org.opencontainers.image.url="https://msftcnsi.com"
 
