@@ -35,7 +35,7 @@ docker run -d \
   -p 8888:8888 \
   --restart unless-stopped \
   ammnt/mtproxy:slim \
-  -S $TLS_SECRET \
+  -S $RANDOM_HEX \
   -D $DOMAIN
 ```
 
