@@ -31,7 +31,7 @@ echo "Your secret key: $TLS_SECRET"
 
 docker run -d \
   --name mtproxy \
-  -p 3478:3478 \
+  -p 443:3478 \
   -p 8888:8888 \
   --restart unless-stopped \
   ammnt/mtproxy:slim \
@@ -47,7 +47,7 @@ services:
     container_name: mtproxy
     restart: unless-stopped
     ports:
-      - "3478:3478"
+      - "443:3478"
       - "8888:8888"
     user: "10480:10480"
     read_only: true
