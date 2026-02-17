@@ -39,6 +39,30 @@ docker run -d \
 
 echo "Your secret key: ee${RANDOM_HEX}${DOMAIN_HEX}"
 ```
+## 🔧 Advanced Configuration
+
+### Docker Compose (recommended example configuration)
+```yaml
+services:
+  mtproxy:
+    image: ammnt/mtproxy:slim
+    container_name: mtproxy
+    restart: unless-stopped
+    ports:
+      - "443:3478"
+      - "8888:8888"
+    command:
+      - "--nat-info"
+      - "172.17.0.2:${EXTERNAL_IP}"
+      - "-S"
+      - "${RANDOM_HEX}"
+      - "-D"
+      - "${DOMAIN}"
+    environment:
+      - EXTERNAL_IP=${EXTERNAL_IP}
+      - RANDOM_HEX=${RANDOM_HEX}
+      - DOMAIN=${DOMAIN}
+```
 
 ## 🎯 Recommended to use in Rootless mode:<br>
 https://docs.docker.com/engine/security/rootless/
