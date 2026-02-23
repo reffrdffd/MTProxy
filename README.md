@@ -22,11 +22,11 @@
 
 ### Generate Secret Key and TLS secret (ee + random + domain in hex)
 ```bash
-DOMAIN="cloudflare.com"
-DOMAIN_HEX=$(echo -n cloudflare.com | xxd -ps)
-RANDOM_HEX=$(head -c 16 /dev/urandom | xxd -ps)
-EXTERNAL_IP=$(curl -s ifconfig.me)
-INTERNAL_IP=172.17.0.2 # your container local IP
+export DOMAIN="cloudflare.com"
+export DOMAIN_HEX=$(echo -n cloudflare.com | xxd -ps)
+export RANDOM_HEX=$(head -c 16 /dev/urandom | xxd -ps)
+export EXTERNAL_IP=$(curl -s ifconfig.me)
+export INTERNAL_IP=172.17.0.2 # your container local IP
 
 docker run -d \
   --name mtproxy \
@@ -53,15 +53,11 @@ services:
       - "8888:8888"
     command:
       - "--nat-info"
-      - "172.17.0.2:${EXTERNAL_IP}"
+      - "${INTERNAL_IP}:${EXTERNAL_IP}"
       - "-S"
       - "${RANDOM_HEX}"
       - "-D"
       - "${DOMAIN}"
-    environment:
-      - EXTERNAL_IP=${EXTERNAL_IP}
-      - RANDOM_HEX=${RANDOM_HEX}
-      - DOMAIN=${DOMAIN}
 ```
 
 ## 🎯 Recommended to use in Rootless mode:<br>
